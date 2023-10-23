@@ -24,7 +24,7 @@ public class BundleData : ResourceData
         entries.Add(resource);
     }
 
-    public override Resource AsFhirResource()
+    public override Bundle AsFhirResource()
     {
         var bundle = new Bundle
         {

@@ -1,8 +1,10 @@
 ﻿using Hl7.Fhir.Serialization;
 using KLChildrenReportingCSharpExample;
+using Hl7.Fhir.Rest;
 using static Hl7.Fhir.Model.Bundle;
 using static Hl7.Fhir.Model.Encounter;
 using static Hl7.Fhir.Model.Patient;
+using Hl7.Fhir.Model;
 
 // DateTime values
 var timestamp = DateTimeOffset.UtcNow;
@@ -134,3 +136,6 @@ var report = rikkeReport.AsFhirResource();
 var serializer = new FhirJsonSerializer(new SerializerSettings { Pretty = true });
 var jsonContent = serializer.SerializeToString(report);
 Console.WriteLine(jsonContent);
+
+var client = new FhirClient("https://care-gateway.test001.ehealth.sundhed.dk/fhir");
+client.Update<Bundle>(report);
