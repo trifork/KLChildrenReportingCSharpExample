@@ -77,8 +77,8 @@ var feeding = new ObservationData(
     "http://fhir.kl.dk/children/StructureDefinition/klgateway-children-feeding-observation",
     patientRikke.Reference(),
     twMonthsEncounter.Reference(),
-    date,
     date.AddDays(-63),
+    date,
     feedingValueSnomedCoding,
     new()
     {
@@ -120,7 +120,7 @@ var indicatorsMS = new ObservationData(
     );
 
 // Report
-var rikkeReport = new BundleData("RikkeDeliveryReport2months", BundleType.Collection, DateTimeOffset.UtcNow);
+var rikkeReport = new BundleData(Guid.NewGuid().ToString(), BundleType.Collection, DateTimeOffset.UtcNow);
 rikkeReport.AddEntry(patientRikke);
 rikkeReport.AddEntry(patientKirsten);
 rikkeReport.AddEntry(rikkesParent);
@@ -135,7 +135,19 @@ rikkeReport.AddEntry(indicatorsMS);
 var report = rikkeReport.AsFhirResource();
 var serializer = new FhirJsonSerializer(new SerializerSettings { Pretty = true });
 var jsonContent = serializer.SerializeToString(report);
+
 Console.WriteLine(jsonContent);
 
+var deserializer = new FhirJsonPocoDeserializer();
+var b = deserializer.DeserializeResource(jsonContent);
+
 var client = new FhirClient("https://care-gateway.test001.ehealth.sundhed.dk/fhir");
-client.Update<Bundle>(report);
+try
+{
+    var result = await client.UpdateAsync((Bundle)report);
+    Console.WriteLine("Bundle uploaded successfully");
+}
+catch (FhirOperationException ex)
+{
+    Console.WriteLine(ex.ToString());
+}
