@@ -141,6 +141,8 @@ Console.WriteLine(jsonContent);
 var deserializer = new FhirJsonPocoDeserializer();
 var b = deserializer.DeserializeResource(jsonContent);
 
+//Bearer tokens can be added using https://stackoverflow.com/questions/53063004/net-fhir-client-with-token-example
+
 var client = new FhirClient("https://care-gateway.test001.ehealth.sundhed.dk/fhir");
 try
 {
